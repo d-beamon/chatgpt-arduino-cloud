@@ -1,0 +1,62 @@
+name: ChatGPT
+widgets:
+    - height: 4
+      height_mobile: 4
+      name: Response
+      options:
+        showThing: false
+      type: Value
+      variables:
+        - thing_id: ChatGPT
+          variable_id: response
+      width: 10
+      width_mobile: 4
+      x: 8
+      x_mobile: 4
+      "y": 4
+      y_mobile: 16
+    - height: 4
+      height_mobile: 4
+      name: Send Question
+      options:
+        showThing: false
+      type: Push Button
+      variables:
+        - thing_id: ChatGPT
+          variable_id: send_message
+      width: 4
+      width_mobile: 4
+      x: 20
+      x_mobile: 4
+      "y": 0
+      y_mobile: 12
+    - height: 4
+      height_mobile: 4
+      name: Question
+      options:
+        showThing: false
+      type: Value
+      variables:
+        - thing_id: ChatGPT
+          variable_id: text
+      width: 10
+      width_mobile: 4
+      x: 8
+      x_mobile: 0
+      "y": 0
+      y_mobile: 12
+    - height: 12
+      height_mobile: 12
+      name: Messenger
+      options:
+        showThing: false
+      type: Messenger
+      variables:
+        - thing_id: ChatGPT
+          variable_id: message
+      width: 8
+      width_mobile: 8
+      x: 0
+      x_mobile: 0
+      "y": 0
+      y_mobile: 0
