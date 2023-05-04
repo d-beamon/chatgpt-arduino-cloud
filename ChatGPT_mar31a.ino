@@ -41,6 +41,9 @@ const char* apiEndpoint = "/v1/completions";
 //const char* accessToken = "your_OpenAI_access_token";
 const char* accessToken = SECRET_OPENAI_API_TOKEN;
 int maxTokens = 30;
+// Other models: gpt-3.5-turbo
+// Check the full list here: https://platform.openai.com/account/rate-limits
+String OpenAImodel = "text-davinci-003";
 
 // Some alternative endpoints if you want to play
 //const char* apiEndpoint = "/v1/engines/davinci-codex/completions";
@@ -61,8 +64,6 @@ bool message_sent = false;
 #ifdef USE_THREAD
 Thread thread_blink = Thread();
 #endif
-
-JSONVar jsonData;
 
 void setup() {
   // Initialize serial and wait for port to open:
@@ -101,7 +102,11 @@ void setup() {
 
 int http_send(String question)
 {
-  String requestBody = "{\"model\":\"text-davinci-003\",\"prompt\":\"" + question + "\",\"max_tokens\":" + String(maxTokens) + "}";
+  question.trim();  // Remove leading and trailing spaces that might not be accepted by JSON parsers
+  question += ". With max " + String(maxTokens) + " chars.";
+  String requestBody = "{\"model\":\"" + OpenAImodel +
+      "\",\"prompt\":\"" + question + 
+      "\",\"max_tokens\":" + String(maxTokens) + "}";
 
   Serial.print("Sending question to ChatGPT: ");
   Serial.println(question);
@@ -126,7 +131,6 @@ int http_send(String question)
     Serial.println("Error " + String(ret) + " sending frame to ChatGPT");
     return -1;
   }
-  Serial.println(ret);
   httpClient.sendHeader("Content-Type", "application/json");
   httpClient.sendHeader("Authorization", "Bearer " + String(accessToken));
   httpClient.sendHeader("Content-Length", requestBody.length());
@@ -152,14 +156,6 @@ void loop() {
   ArduinoCloud.update();
   // Your code here 
   
-#if 0
-  static unsigned long last = 0;
-  if (millis() - last > 5000) {
-    Serial.println("Tick:" + String(millis()) + " connected:" + String(ArduinoCloud.connected()));
-    last = millis();
-  }
-#endif
-
   if (message_available) {
     message_available = false;
     message  = "";
@@ -178,9 +174,9 @@ void loop() {
     Serial.println("responseStatusCode: " + String(statusCode));
     Serial.println("responseBody: " + responseBody);
 
+    JSONVar jsonData = JSON.parse(responseBody);
     // If status == 200 ==> Update the variables so that they are sent to the IoT Cloud
     if (statusCode == 200) {
-      jsonData = JSON.parse(responseBody);
       String parsedText = jsonData["choices"][0]["text"];
       parsedText.trim();
       response = parsedText;
@@ -188,7 +184,8 @@ void loop() {
       Serial.println("Parsed text: " + response);
     }
     else {
-      response = "ERROR " + String(statusCode);
+      String parsedText = jsonData["error"]["message"];
+      response = "ERROR " + String(statusCode) + ": " + parsedText;
       message  = response;
     }
   }
@@ -225,7 +222,7 @@ void onMessageChange()  {
   if (first_time) {
      // Ignoring the first message just in case the IoT Cloud wants to send us the latest one on init 
     first_time = false;
-    Serial.println("Ignoring firt message");
+    Serial.println("Ignoring first message");
   }
   else {
     message_available = true;
