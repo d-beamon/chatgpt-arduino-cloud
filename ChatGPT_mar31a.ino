@@ -184,7 +184,8 @@ void loop() {
       Serial.println("Parsed text: " + response);
     }
     else {
-      response = "ERROR " + String(statusCode);
+      String parsedText = jsonData["error"]["message"];
+      response = "ERROR " + String(statusCode) + ": " + parsedText;
       message  = response;
     }
   }
