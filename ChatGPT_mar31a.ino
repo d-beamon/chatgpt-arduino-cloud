@@ -65,8 +65,6 @@ bool message_sent = false;
 Thread thread_blink = Thread();
 #endif
 
-JSONVar jsonData;
-
 void setup() {
   // Initialize serial and wait for port to open:
   Serial.begin(9600);
@@ -133,7 +131,6 @@ int http_send(String question)
     Serial.println("Error " + String(ret) + " sending frame to ChatGPT");
     return -1;
   }
-  Serial.println(ret);
   httpClient.sendHeader("Content-Type", "application/json");
   httpClient.sendHeader("Authorization", "Bearer " + String(accessToken));
   httpClient.sendHeader("Content-Length", requestBody.length());
@@ -159,14 +156,6 @@ void loop() {
   ArduinoCloud.update();
   // Your code here 
   
-#if 0
-  static unsigned long last = 0;
-  if (millis() - last > 5000) {
-    Serial.println("Tick:" + String(millis()) + " connected:" + String(ArduinoCloud.connected()));
-    last = millis();
-  }
-#endif
-
   if (message_available) {
     message_available = false;
     message  = "";
@@ -185,9 +174,9 @@ void loop() {
     Serial.println("responseStatusCode: " + String(statusCode));
     Serial.println("responseBody: " + responseBody);
 
+    JSONVar jsonData = JSON.parse(responseBody);
     // If status == 200 ==> Update the variables so that they are sent to the IoT Cloud
     if (statusCode == 200) {
-      jsonData = JSON.parse(responseBody);
       String parsedText = jsonData["choices"][0]["text"];
       parsedText.trim();
       response = parsedText;
@@ -232,7 +221,7 @@ void onMessageChange()  {
   if (first_time) {
      // Ignoring the first message just in case the IoT Cloud wants to send us the latest one on init 
     first_time = false;
-    Serial.println("Ignoring firt message");
+    Serial.println("Ignoring first message");
   }
   else {
     message_available = true;
