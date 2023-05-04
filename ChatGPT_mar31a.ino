@@ -41,6 +41,9 @@ const char* apiEndpoint = "/v1/completions";
 //const char* accessToken = "your_OpenAI_access_token";
 const char* accessToken = SECRET_OPENAI_API_TOKEN;
 int maxTokens = 30;
+// Other models: gpt-3.5-turbo
+// Check the full list here: https://platform.openai.com/account/rate-limits
+String OpenAImodel = "text-davinci-003";
 
 // Some alternative endpoints if you want to play
 //const char* apiEndpoint = "/v1/engines/davinci-codex/completions";
@@ -101,7 +104,11 @@ void setup() {
 
 int http_send(String question)
 {
-  String requestBody = "{\"model\":\"text-davinci-003\",\"prompt\":\"" + question + "\",\"max_tokens\":" + String(maxTokens) + "}";
+  question.trim();  // Remove leading and trailing spaces that might not be accepted by JSON parsers
+  question += ". With max " + String(maxTokens) + " chars.";
+  String requestBody = "{\"model\":\"" + OpenAImodel +
+      "\",\"prompt\":\"" + question + 
+      "\",\"max_tokens\":" + String(maxTokens) + "}";
 
   Serial.print("Sending question to ChatGPT: ");
   Serial.println(question);
