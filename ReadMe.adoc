@@ -157,9 +157,14 @@ over-the-air (OTA)_
 Go to the Dashboards section and click on CREATE. Assign a name and
 start adding the widgets according to the following table:
 
-|Widget type |Widget name |Variable name | +
-|---|---|---| |Messenger|Chat window|message| |Value|Question|text|
-|Value|Response|response| |Push Button|Send Question|send_message|
+[cols=",,",options="header",]
+|===
+|Widget type |Widget name |Variable name
+|Messenger |Chat window |message
+|Value |Question |text
+|Value |Response |response
+|Push Button |Send Question |send_message
+|===
 
 The final result can be something like this:
 
