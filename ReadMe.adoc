@@ -25,9 +25,9 @@ This project is released under a GPLv3+ License.
 
 == Overview
 
-The project involves using an Arduino IoT Cloud compatible device, such
+The project involves using an https://docs.arduino.cc/arduino-cloud/getting-started/technical-reference#compatible-hardware[Arduino IoT Cloud compatible device], such
 as an Arduino Nano RP2040 Connect or any ESP32/ESP8266 device, as a
-middleware between the IoT Cloud and OpenAI's GPT-3.5 language model.
+middleware between the https://cloud.arduino.cc/[Arduino IoT Cloud] and OpenAI's GPT-3.5 language model.
 The device receives prompts (questions) from the IoT Cloud, sends them
 to the OpenAI API, receives and parses the replies, and sends them back
 to the IoT Cloud.
